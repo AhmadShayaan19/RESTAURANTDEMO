@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OrangeBite Restaurant</title>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #111;
+  color: white;
+}
+
+header {
+  background: #ff7a00;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 28px;
+}
+
+#cart-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+  background: #1a1a1a;
+}
+
+.hero h2 {
+  font-size: 36px;
+  color: #ff7a00;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.filters button {
+  background: #ff7a00;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.food-card {
+  background: #1c1c1c;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.food-card:hover {
+  transform: translateY(-5px);
+}
+
+.food-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.food-info {
+  padding: 15px;
+}
+
+.food-info h3 {
+  margin-bottom: 10px;
+}
+
+.food-info p {
+  margin-bottom: 10px;
+}
+
+.food-info button {
+  background: #ff7a00;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.cart {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 320px;
+  height: 100%;
+  background: #222;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.5);
+}
+
+.hidden {
+  display: none;
+}
+
+.cart-item {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 10px;
+}
+
+.qty-btn {
+  background: #ff7a00;
+  border: none;
+  color: white;
+  padding: 4px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+</style>
+
+
+</head>
+<body>
+
+  <header>
+    <h1>🍔 OrangeBite</h1>
+    <button id="cart-btn">🛒 Cart (<span id="cart-count">0</span>)</button>
+  </header>
+
+  <section class="hero">
+    <h2>Delicious Food Delivered Fast</h2>
+    <p>Fresh • Hot • Tasty</p>
+  </section>
+
+  <section class="filters">
+    <button onclick="filterFoods('All')">All</button>
+    <button onclick="filterFoods('Burger')">Burger</button>
+    <button onclick="filterFoods('Pizza')">Pizza</button>
+    <button onclick="filterFoods('Drink')">Drinks</button>
+    <button onclick="filterFoods('Dessert')">Dessert</button>
+  </section>
+
+  <main>
+    <div id="food-container" class="food-grid"></div>
+  </main>
+
+  <aside id="cart" class="cart hidden">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3>Total: ₹<span id="cart-total">0</span></h3>
+  </aside>
+<script>const foods = [
+  {
+    id: 1,
+    name: "Cheese Burger",
+    category: "Burger",
+    price: 199,
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
+  },
+  {
+    id: 2,
+    name: "Pepperoni Pizza",
+    category: "Pizza",
+    price: 299,
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591"
+  },
+  {
+    id: 3,
+    name: "Chocolate Cake",
+    category: "Dessert",
+    price: 149,
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587"
+  },
+  {
+    id: 4,
+    name: "Cold Coffee",
+    category: "Drink",
+    price: 99,
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085"
+  }
+];
+
+let cart = [];
+
+const foodContainer = document.getElementById("food-container");
+const cartItems = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+const cartCount = document.getElementById("cart-count");
+const cartBox = document.getElementById("cart");
+
+function displayFoods(items) {
+  foodContainer.innerHTML = "";
+
+  items.forEach(food => {
+    foodContainer.innerHTML += `
+      <div class="food-card">
+        <img src="${food.image}" alt="${food.name}">
+        <div class="food-info">
+          <h3>${food.name}</h3>
+          <p>₹${food.price}</p>
+          <button onclick="addToCart(${food.id})">Add to Cart</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function filterFoods(category) {
+  if (category === "All") {
+    displayFoods(foods);
+  } else {
+    displayFoods(foods.filter(food => food.category === category));
+  }
+}
+
+function addToCart(id) {
+  const item = cart.find(food => food.id === id);
+
+  if (item) {
+    item.qty++;
+  } else {
+    const food = foods.find(food => food.id === id);
+    cart.push({ ...food, qty: 1 });
+  }
+
+  updateCart();
+}
+
+function updateCart() {
+  cartItems.innerHTML = "";
+  let total = 0;
+  let count = 0;
+
+  cart.forEach(item => {
+    total += item.price * item.qty;
+    count += item.qty;
+
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <h4>${item.name}</h4>
+        <p>₹${item.price} x ${item.qty}</p>
+        <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+        <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+      </div>
+    `;
+  });
+
+  cartTotal.textContent = total;
+  cartCount.textContent = count;
+}
+
+function changeQty(id, change) {
+  const item = cart.find(food => food.id === id);
+
+  item.qty += change;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(food => food.id !== id);
+  }
+
+  updateCart();
+}
+
+document.getElementById("cart-btn").addEventListener("click", () => {
+  cartBox.classList.toggle("hidden");
+});
+
+displayFoods(foods);
+</script>
+</body>
+</html>
