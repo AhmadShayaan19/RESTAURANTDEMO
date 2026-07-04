@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OrangeBite Restaurant</title>
+  <link rel="stylesheet" href="OrangeBite.css" />
+</head>
+<body>
+
+  <header>
+    <h1>🍔 OrangeBite</h1>
+    <button id="cart-btn">🛒 Cart (<span id="cart-count">0</span>)</button>
+  </header>
+
+  <section class="hero">
+    <h2>Delicious Food Delivered Fast</h2>
+    <p>Fresh • Hot • Tasty</p>
+  </section>
+
+  <section class="filters">
+    <button onclick="filterFoods('All')">All</button>
+    <button onclick="filterFoods('Burger')">Burger</button>
+    <button onclick="filterFoods('Pizza')">Pizza</button>
+    <button onclick="filterFoods('Drink')">Drinks</button>
+    <button onclick="filterFoods('Dessert')">Dessert</button>
+  </section>
+
+  <main>
+    <div id="food-container" class="food-grid"></div>
+  </main>
+
+  <aside id="cart" class="cart hidden">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3>Total: ₹<span id="cart-total">0</span></h3>
+  </aside>
+
+  <script src="OrangeBite.js"></script>
+</body>
+</html>
